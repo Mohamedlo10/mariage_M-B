@@ -1,4 +1,5 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
 // Lazy-load all components
@@ -10,34 +11,34 @@ const MemoryWall = lazy(() => import('./components/MemoryWall'));
 const RSVP = lazy(() => import('./components/RSVP'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 
+function MainSite() {
+  return (
+    <div style={{ opacity: 0, animation: 'fadeIn 1.5s ease forwards' }}>
+      <Hero />
+      <Countdown />
+      <Timeline />
+      <InteractiveMap />
+      <MemoryWall />
+      <RSVP />
+      <footer className="footer">
+        <div className="footerInitials">M & B</div>
+        <div className="footerThanks">Avec toute notre gratitude, Mamadou & Binetou</div>
+        <div className="footerDate">Dakar · Juillet 2026</div>
+      </footer>
+    </div>
+  );
+}
+
 function App() {
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    // Check hash for admin route
-    const checkRoute = () => {
-      setIsAdmin(window.location.hash === '#/admin');
-    };
-
-    checkRoute();
-    window.addEventListener('hashchange', checkRoute);
-
-    // Scroll to top on load
-    window.scrollTo(0, 0);
-
-    return () => window.removeEventListener('hashchange', checkRoute);
-  }, []);
-
-  // Admin route
-  if (isAdmin) {
-    return (
+  return (
+    <Router>
       <Suspense fallback={
         <div style={{
           minHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'var(--color-charcoal)',
+          background: 'var(--color-cream)',
           color: 'var(--color-gold-dark)',
           fontFamily: 'var(--font-display)',
           fontSize: '14px',
@@ -47,44 +48,31 @@ function App() {
           Chargement…
         </div>
       }>
-        <AdminPanel />
+        <Routes>
+          <Route path="/" element={<MainSite />} />
+          <Route path="/admin" element={
+            <Suspense fallback={
+              <div style={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'var(--color-charcoal)',
+                color: 'var(--color-gold-dark)',
+                fontFamily: 'var(--font-display)',
+                fontSize: '14px',
+                letterSpacing: '4px',
+                textTransform: 'uppercase',
+              }}>
+                Chargement…
+              </div>
+            }>
+              <AdminPanel />
+            </Suspense>
+          } />
+        </Routes>
       </Suspense>
-    );
-  }
-
-  // Main site
-  return (
-    <Suspense fallback={
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'var(--color-cream)',
-        color: 'var(--color-gold-dark)',
-        fontFamily: 'var(--font-display)',
-        fontSize: '14px',
-        letterSpacing: '4px',
-        textTransform: 'uppercase',
-      }}>
-        Chargement…
-      </div>
-    }>
-      <div style={{ opacity: 0, animation: 'fadeIn 1.5s ease forwards' }}>
-        <Hero />
-        <Countdown />
-        <Timeline />
-        <InteractiveMap />
-        <MemoryWall />
-        <RSVP />
-
-        <footer className="footer">
-          <div className="footerInitials">M & B</div>
-          <div className="footerThanks">Avec toute notre gratitude, Mamadou & Binetou</div>
-          <div className="footerDate">Dakar · Juillet 2026</div>
-        </footer>
-      </div>
-    </Suspense>
+    </Router>
   );
 }
 

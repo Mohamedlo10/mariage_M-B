@@ -238,7 +238,7 @@ export default function AdminPanel() {
           <button type="submit" className={styles.loginBtn} disabled={loading}>
             {loading ? 'Connexion...' : 'Accéder'}
           </button>
-          <a href="#/" className={styles.backLink}>← Retour au site</a>
+          <a href="/" className={styles.backLink}>← Retour au site</a>
         </motion.form>
       </div>
     );
