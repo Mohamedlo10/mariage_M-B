@@ -37,7 +37,9 @@ function Toast({ show, name }) {
 }
 
 // Lightbox component via portal
-function Lightbox({ photos, currentIndex, onClose, onPrev, onNext }) {
+function Lightbox({ photos, currentIndex, onClose, onPrev, onNext, onSelectIndex }) {
+  const thumbScrollRef = useRef(null);
+
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === 'Escape') onClose();
@@ -52,9 +54,36 @@ function Lightbox({ photos, currentIndex, onClose, onPrev, onNext }) {
     };
   }, [onClose, onPrev, onNext]);
 
+  useEffect(() => {
+    if (thumbScrollRef.current) {
+      const activeThumb = thumbScrollRef.current.children[currentIndex];
+      if (activeThumb) {
+        activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+  }, [currentIndex]);
+
   if (currentIndex < 0 || !photos[currentIndex]) return null;
   const photo = photos[currentIndex];
   const imgSrc = photo.src || photo.image_url;
+
+  const handleDownload = async (e) => {
+    e.stopPropagation();
+    try {
+      const response = await fetch(imgSrc);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = photo.subtitle || photo.author_name || 'photo';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error('Download error:', err);
+    }
+  };
 
   return createPortal(
     <motion.div
@@ -64,7 +93,19 @@ function Lightbox({ photos, currentIndex, onClose, onPrev, onNext }) {
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
-      <button className={styles.lightboxClose} onClick={onClose}><X size={24} /></button>
+      <div className={styles.lightboxTopBar} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.lightboxCounter}>
+          {currentIndex + 1} / {photos.length}
+        </div>
+        <div className={styles.lightboxActions}>
+          <button className={styles.lightboxActionBtn} onClick={handleDownload} title="Télécharger">
+            <Download size={24} />
+          </button>
+          <button className={styles.lightboxActionBtn} onClick={onClose} title="Fermer">
+            <X size={28} />
+          </button>
+        </div>
+      </div>
 
       {currentIndex > 0 && (
         <button className={`${styles.lightboxNav} ${styles.lightboxPrev}`} onClick={(e) => { e.stopPropagation(); onPrev(); }}>
@@ -72,24 +113,20 @@ function Lightbox({ photos, currentIndex, onClose, onPrev, onNext }) {
         </button>
       )}
 
-      <motion.img
-        key={imgSrc}
-        src={imgSrc}
-        alt={photo.subtitle || photo.author_name || 'Photo'}
-        className={styles.lightboxImage}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.3 }}
-        onClick={(e) => e.stopPropagation()}
-      />
-
-      <div className={styles.lightboxCaption} onClick={(e) => e.stopPropagation()}>
-        {photo.subtitle || photo.author_name}
-      </div>
-
-      <div className={styles.lightboxCounter}>
-        {currentIndex + 1} / {photos.length}
+      <div className={styles.lightboxImageContainer} onClick={(e) => e.stopPropagation()}>
+        <motion.img
+          key={imgSrc}
+          src={imgSrc}
+          alt={photo.subtitle || photo.author_name || 'Photo'}
+          className={styles.lightboxImage}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.3 }}
+        />
+        <div className={styles.lightboxCaption}>
+          {photo.subtitle || photo.author_name}
+        </div>
       </div>
 
       {currentIndex < photos.length - 1 && (
@@ -97,6 +134,23 @@ function Lightbox({ photos, currentIndex, onClose, onPrev, onNext }) {
           <ChevronRight size={28} />
         </button>
       )}
+
+      <div className={styles.lightboxThumbnailsWrapper} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.lightboxThumbnails} ref={thumbScrollRef}>
+          {photos.map((p, idx) => {
+            const thumbSrc = p.src || p.image_url;
+            return (
+              <div 
+                key={p.id}
+                className={`${styles.lightboxThumb} ${idx === currentIndex ? styles.lightboxThumbActive : ''}`}
+                onClick={() => onSelectIndex(idx)}
+              >
+                <img src={thumbSrc} alt="" />
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </motion.div>,
     document.body
   );
@@ -455,6 +509,7 @@ export default function MemoryWall() {
             onClose={closeLightbox}
             onPrev={prevLightbox}
             onNext={nextLightbox}
+            onSelectIndex={setLightboxIndex}
           />
         )}
       </AnimatePresence>
