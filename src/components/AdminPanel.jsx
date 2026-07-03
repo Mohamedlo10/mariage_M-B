@@ -4,14 +4,14 @@ import { Lock, Users, Calendar, Download, Trash2, Image as ImageIcon, LogOut, Se
 import { supabase } from '../lib/supabaseClient';
 import styles from './AdminPanel.module.css';
 
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
-
 export default function AdminPanel() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [authError, setAuthError] = useState('');
   
-  const [rsvpList, setRsvpList] = useState([]);
+  const [rsvpList, setRsvpList] = useState([]); // All RSVPs (for stats)
+  const [filteredRsvpList, setFilteredRsvpList] = useState([]); // RSVPs for table
   const [photos, setPhotos] = useState([]);
   
   const [activeTab, setActiveTab] = useState('rsvp');
@@ -26,20 +26,44 @@ export default function AdminPanel() {
   const [selectedPhotos, setSelectedPhotos] = useState(new Set());
   const [downloading, setDownloading] = useState(false);
 
+  // Check current session & listen for auth changes
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setAuthenticated(!!session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch all data when authenticated
   useEffect(() => {
     if (authenticated) {
       fetchData();
     }
   }, [authenticated]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setAuthenticated(true);
-      setPasswordError('');
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setAuthError('Email ou mot de passe incorrect');
     } else {
-      setPasswordError('Mot de passe incorrect');
+      setAuthError('');
     }
+    setLoading(false);
+  };
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    await supabase.auth.signOut();
   };
 
   const fetchData = async () => {
@@ -59,12 +83,34 @@ export default function AdminPanel() {
     }
   };
 
+  // RPC Filtering
+  useEffect(() => {
+    if (!authenticated) return;
+    const fetchFiltered = async () => {
+      try {
+        const { data, error } = await supabase.rpc('get_filtered_rsvps', {
+          search_term: searchQuery,
+          day_mode: dayFilter
+        });
+        if (error) throw error;
+        setFilteredRsvpList(data || []);
+      } catch (err) {
+        console.error('Erreur filtrage RPC:', err);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      fetchFiltered();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, dayFilter, authenticated, rsvpList]);
+
   // ── RSVP Logic ──
   const exportCSV = () => {
     const headers = ['Nom', 'Téléphone', 'Jours', 'Date de confirmation'];
     const dayLabels = { 1: 'Samedi 11', 2: 'Dimanche 12' };
 
-    const rows = filteredRsvp.map(r => [
+    const rows = filteredRsvpList.map(r => [
       r.name,
       r.phone || '',
       r.days.map(d => dayLabels[d] || d).join(' + '),
@@ -85,24 +131,6 @@ export default function AdminPanel() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  const filteredRsvp = rsvpList.filter(rsvp => {
-    // Text search
-    const query = searchQuery.toLowerCase();
-    const matchesSearch = rsvp.name.toLowerCase().includes(query) || (rsvp.phone && rsvp.phone.includes(query));
-    
-    // Day filter
-    let matchesDay = true;
-    if (dayFilter === 'saturday') {
-      matchesDay = rsvp.days.includes(1) && !rsvp.days.includes(2);
-    } else if (dayFilter === 'sunday') {
-      matchesDay = rsvp.days.includes(2) && !rsvp.days.includes(1);
-    } else if (dayFilter === 'both') {
-      matchesDay = rsvp.days.includes(1) && rsvp.days.includes(2);
-    }
-
-    return matchesSearch && matchesDay;
-  });
 
   // ── Photos Logic ──
   const deletePhoto = async (photo) => {
@@ -171,7 +199,7 @@ export default function AdminPanel() {
     setDownloading(false);
   };
 
-  // Stats (on all data, not filtered)
+  // Stats (on all data)
   const totalGuests = rsvpList.length;
   const saturdayCount = rsvpList.filter(r => r.days.includes(1)).length;
   const sundayCount = rsvpList.filter(r => r.days.includes(2)).length;
@@ -192,15 +220,24 @@ export default function AdminPanel() {
           <h1 className={styles.loginTitle}>Administration</h1>
           <p className={styles.loginSubtitle}>Espace réservé aux organisateurs</p>
           <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className={styles.loginInput}
+            autoFocus
+          />
+          <input
             type="password"
             placeholder="Mot de passe"
             value={password}
             onChange={e => setPassword(e.target.value)}
             className={styles.loginInput}
-            autoFocus
           />
-          {passwordError && <div className={styles.loginError}>{passwordError}</div>}
-          <button type="submit" className={styles.loginBtn}>Accéder</button>
+          {authError && <div className={styles.loginError}>{authError}</div>}
+          <button type="submit" className={styles.loginBtn} disabled={loading}>
+            {loading ? 'Connexion...' : 'Accéder'}
+          </button>
           <a href="#/" className={styles.backLink}>← Retour au site</a>
         </motion.form>
       </div>
@@ -218,9 +255,9 @@ export default function AdminPanel() {
           <button onClick={fetchData} className={styles.headerBtn} disabled={loading}>
             {loading ? '⏳' : '🔄'} Rafraîchir
           </button>
-          <a href="#/" className={styles.headerBtn}>
+          <button onClick={handleLogout} className={styles.headerBtn}>
             <LogOut size={16} /> Quitter
-          </a>
+          </button>
         </div>
       </header>
 
@@ -303,12 +340,12 @@ export default function AdminPanel() {
               </div>
               <div className={styles.toolbarRight}>
                 <button onClick={exportCSV} className={styles.exportBtn}>
-                  <Download size={16} /> Exporter CSV ({filteredRsvp.length})
+                  <Download size={16} /> Exporter CSV ({filteredRsvpList.length})
                 </button>
               </div>
             </div>
 
-            {filteredRsvp.length === 0 ? (
+            {filteredRsvpList.length === 0 ? (
               <div className={styles.emptyState}>Aucune confirmation trouvée avec ces filtres.</div>
             ) : (
               <div className={styles.tableWrapper}>
@@ -323,7 +360,7 @@ export default function AdminPanel() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredRsvp.map((rsvp, i) => (
+                    {filteredRsvpList.map((rsvp, i) => (
                       <tr key={rsvp.id}>
                         <td>{i + 1}</td>
                         <td className={styles.cellName}>{rsvp.name}</td>

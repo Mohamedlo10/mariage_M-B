@@ -46,10 +46,37 @@ create policy "photos_insert_anon"
   on public.photos for insert
   with check (true);
 
--- Tout le monde peut supprimer (pour l'admin côté client)
-create policy "photos_delete_all"
+-- Seuls les administrateurs connectés (authentifiés) peuvent supprimer
+create policy "photos_delete_admin"
   on public.photos for delete
-  using (true);
+  using (auth.role() = 'authenticated');
+
+-- =============================================
+-- 3. Fonction RPC pour filtrer les RSVP (Recherche + Jours)
+-- =============================================
+create or replace function public.get_filtered_rsvps(
+  search_term text default '',
+  day_mode text default 'all'
+)
+returns setof public.rsvp
+language plpgsql
+security definer
+as $$
+begin
+  return query
+  select *
+  from public.rsvp
+  where 
+    (search_term = '' or name ilike '%' || search_term || '%' or (phone is not null and phone ilike '%' || search_term || '%'))
+    and (
+      day_mode = 'all'
+      or (day_mode = 'saturday' and 1 = any(days) and not 2 = any(days))
+      or (day_mode = 'sunday' and 2 = any(days) and not 1 = any(days))
+      or (day_mode = 'both' and 1 = any(days) and 2 = any(days))
+    )
+  order by created_at desc;
+end;
+$$;
 
 -- =============================================
 -- STORAGE BUCKETS
@@ -70,5 +97,5 @@ create policy "photos_delete_all"
 -- memory-wall :
 --   SELECT → true (lecture publique)
 --   INSERT → true (upload anonyme)
---   DELETE → true (suppression admin)
+--   DELETE → auth.role() = 'authenticated' (suppression admin)
 -- =============================================

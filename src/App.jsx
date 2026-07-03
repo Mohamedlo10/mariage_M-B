@@ -84,7 +84,7 @@ function App() {
             <InteractiveMap />
             <MemoryWall />
             <RSVP />
-            
+
             <footer className="footer">
               <div className="footerInitials">M & B</div>
               <div className="footerThanks">Avec toute notre gratitude, Mamadou & Binetou</div>
