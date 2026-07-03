@@ -86,12 +86,12 @@ export default function RSVP() {
         <div className={styles.subtitle}>Confirmation</div>
         <h2 className={styles.title}>Serez-vous des nôtres ?</h2>
         <p className={styles.intro}>
-          Merci de confirmer votre présence avant le 4 juillet 2026.
+          Merci de confirmer votre présence.
         </p>
       </motion.div>
 
-      <motion.form 
-        className={styles.form} 
+      <motion.form
+        className={styles.form}
         onSubmit={handleSubmit}
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -100,37 +100,37 @@ export default function RSVP() {
       >
         <div className={styles.field}>
           <label className={styles.label}>Votre nom</label>
-          <input 
-            type="text" 
-            placeholder="Prénom et nom" 
-            required 
+          <input
+            type="text"
+            placeholder="Prénom et nom"
+            required
             value={name}
             onChange={e => setName(e.target.value)}
-            className={styles.input} 
+            className={styles.input}
           />
         </div>
 
         <div className={styles.field}>
           <label className={styles.label}>Téléphone <span style={{ opacity: 0.5, fontWeight: 300, letterSpacing: 0 }}>(optionnel)</span></label>
-          <input 
-            type="tel" 
-            placeholder="+221 XX XXX XX XX" 
+          <input
+            type="tel"
+            placeholder="+221 XX XXX XX XX"
             value={phone}
             onChange={e => setPhone(e.target.value)}
-            className={styles.input} 
+            className={styles.input}
           />
         </div>
 
         <div className={styles.field}>
           <label className={styles.label}>Je serai présent(e) le</label>
           <div className={styles.chipGroup}>
-            <div 
+            <div
               className={clsx(styles.chip, days.includes(1) && styles.selected)}
               onClick={() => toggleDay(1)}
             >
               Samedi 11 juillet
             </div>
-            <div 
+            <div
               className={clsx(styles.chip, days.includes(2) && styles.selected)}
               onClick={() => toggleDay(2)}
             >
@@ -139,9 +139,9 @@ export default function RSVP() {
           </div>
         </div>
 
-        <button 
-          type="submit" 
-          className={styles.submitBtn} 
+        <button
+          type="submit"
+          className={styles.submitBtn}
           disabled={!name.trim() || days.length === 0 || submitting}
         >
           {submitting ? 'Envoi en cours…' : 'Confirmer ma présence'}
@@ -152,7 +152,7 @@ export default function RSVP() {
         )}
 
         {submitted && (
-          <motion.div 
+          <motion.div
             className={styles.successMessage}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -162,7 +162,7 @@ export default function RSVP() {
         )}
       </motion.form>
 
-      <motion.div 
+      <motion.div
         className={styles.countText}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
