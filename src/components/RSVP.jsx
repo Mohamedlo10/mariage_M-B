@@ -125,6 +125,12 @@ export default function RSVP() {
           <label className={styles.label}>Je serai présent(e) le</label>
           <div className={styles.chipGroup}>
             <div
+              className={clsx(styles.chip, days.includes(0) && styles.selected)}
+              onClick={() => toggleDay(0)}
+            >
+              Vendredi 10 juillet
+            </div>
+            <div
               className={clsx(styles.chip, days.includes(1) && styles.selected)}
               onClick={() => toggleDay(1)}
             >

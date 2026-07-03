@@ -108,7 +108,7 @@ export default function AdminPanel() {
   // ── RSVP Logic ──
   const exportCSV = () => {
     const headers = ['Nom', 'Téléphone', 'Jours', 'Date de confirmation'];
-    const dayLabels = { 1: 'Samedi 11', 2: 'Dimanche 12' };
+    const dayLabels = { 0: 'Vendredi 10', 1: 'Samedi 11', 2: 'Dimanche 12' };
 
     const rows = filteredRsvpList.map(r => [
       r.name,
@@ -201,9 +201,9 @@ export default function AdminPanel() {
 
   // Stats (on all data)
   const totalGuests = rsvpList.length;
+  const fridayCount = rsvpList.filter(r => r.days.includes(0)).length;
   const saturdayCount = rsvpList.filter(r => r.days.includes(1)).length;
   const sundayCount = rsvpList.filter(r => r.days.includes(2)).length;
-  const bothDaysCount = rsvpList.filter(r => r.days.includes(1) && r.days.includes(2)).length;
 
   // ── Login Screen ──
   if (!authenticated) {
@@ -270,18 +270,18 @@ export default function AdminPanel() {
         </div>
         <div className={styles.statCard}>
           <Calendar size={24} />
+          <div className={styles.statValue}>{fridayCount}</div>
+          <div className={styles.statLabel}>Ven 10 (Total)</div>
+        </div>
+        <div className={styles.statCard}>
+          <Calendar size={24} />
           <div className={styles.statValue}>{saturdayCount}</div>
-          <div className={styles.statLabel}>Samedi 11 (Total)</div>
+          <div className={styles.statLabel}>Sam 11 (Total)</div>
         </div>
         <div className={styles.statCard}>
           <Calendar size={24} />
           <div className={styles.statValue}>{sundayCount}</div>
-          <div className={styles.statLabel}>Dimanche 12 (Total)</div>
-        </div>
-        <div className={styles.statCard}>
-          <Users size={24} />
-          <div className={styles.statValue}>{bothDaysCount}</div>
-          <div className={styles.statLabel}>Les deux jours</div>
+          <div className={styles.statLabel}>Dim 12 (Total)</div>
         </div>
       </div>
 
@@ -332,9 +332,9 @@ export default function AdminPanel() {
                     className={styles.filterSelect}
                   >
                     <option value="all">Tous les jours</option>
-                    <option value="saturday">Samedi uniquement</option>
-                    <option value="sunday">Dimanche uniquement</option>
-                    <option value="both">Les deux jours</option>
+                    <option value="friday">Ven 10 (Inclus)</option>
+                    <option value="saturday">Sam 11 (Inclus)</option>
+                    <option value="sunday">Dim 12 (Inclus)</option>
                   </select>
                 </div>
               </div>
@@ -367,6 +367,7 @@ export default function AdminPanel() {
                         <td>{rsvp.phone || '—'}</td>
                         <td>
                           <div className={styles.dayBadges}>
+                            {rsvp.days.includes(0) && <span className={styles.badge}>Ven 10</span>}
                             {rsvp.days.includes(1) && <span className={styles.badge}>Sam 11</span>}
                             {rsvp.days.includes(2) && <span className={styles.badge}>Dim 12</span>}
                           </div>

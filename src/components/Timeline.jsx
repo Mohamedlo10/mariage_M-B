@@ -2,6 +2,10 @@ import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import styles from './Timeline.module.css';
 
+const eventsDay0 = [
+  { time: '22h00', title: 'Henné Time', location: 'Yeumbeul Tableau Orange, Dakar' }
+];
+
 const eventsDay1 = [
   { time: '17h00', title: 'Takk Diakkaa', location: 'Yeumbeul Tableau Orange, Dakar' },
   { time: '20h00', title: 'Cérémonie (Nikah)', location: 'Yeumbeul Tableau Orange, Dakar' }
@@ -66,6 +70,20 @@ export default function Timeline() {
             className={styles.goldenThread}
             style={{ scaleY }}
           />
+        </div>
+
+        <div className={styles.dayBlock}>
+          <motion.h3 
+            className={styles.dayTitle}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            Vendredi 10 Juillet 2026
+          </motion.h3>
+          {eventsDay0.map((ev, i) => (
+            <EventRow key={i} event={ev} />
+          ))}
         </div>
 
         <div className={styles.dayBlock}>

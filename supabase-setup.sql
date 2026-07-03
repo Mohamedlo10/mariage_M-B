@@ -70,9 +70,9 @@ begin
     (search_term = '' or name ilike '%' || search_term || '%' or (phone is not null and phone ilike '%' || search_term || '%'))
     and (
       day_mode = 'all'
-      or (day_mode = 'saturday' and 1 = any(days) and not 2 = any(days))
-      or (day_mode = 'sunday' and 2 = any(days) and not 1 = any(days))
-      or (day_mode = 'both' and 1 = any(days) and 2 = any(days))
+      or (day_mode = 'friday' and 0 = any(days))
+      or (day_mode = 'saturday' and 1 = any(days))
+      or (day_mode = 'sunday' and 2 = any(days))
     )
   order by created_at desc;
 end;
