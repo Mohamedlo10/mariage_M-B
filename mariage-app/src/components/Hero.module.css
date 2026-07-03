@@ -1,0 +1,104 @@
+.heroSection {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  background: linear-gradient(180deg, rgba(36,29,21,0.1) 0%, rgba(36,29,21,0.4) 60%, rgba(36,29,21,0.9) 100%), url('/assets/photo-09-sunset.jpg') center 30% / cover no-repeat;
+  color: var(--color-cream);
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  width: 100%;
+  padding: 80px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+}
+
+.bismillah {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 16px;
+}
+
+.names {
+  font-family: var(--font-script);
+  font-size: clamp(80px, 18vw, 150px);
+  line-height: 0.9;
+  color: var(--color-cream);
+  margin: 0;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.quote {
+  max-width: 600px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--color-cream-border);
+  margin-top: 24px;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 32px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.diamond {
+  width: 6px;
+  height: 6px;
+  background: var(--color-gold);
+  transform: rotate(45deg);
+}
+
+.scrollDown {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.scrollLine {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(180deg, transparent, var(--color-gold));
+}
+
+.scrollText {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--color-gold);
+  text-transform: uppercase;
+}
+
+/* Particles */
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  background: var(--color-gold-light);
+  border-radius: 50%;
+  filter: blur(1px);
+  box-shadow: 0 0 8px 2px rgba(195,154,95,0.4);
+}

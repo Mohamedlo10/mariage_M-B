@@ -1,0 +1,165 @@
+.timelineSection {
+  background-color: var(--color-cream);
+  padding: 120px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.subtitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-script);
+  font-size: clamp(48px, 10vw, 64px);
+  color: var(--color-charcoal);
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+.intro {
+  font-size: 18px;
+  color: var(--color-olive);
+  max-width: 520px;
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.timelineContainer {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* The vertical golden thread */
+.goldenThreadWrapper {
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-cream-border);
+}
+
+@media (min-width: 768px) {
+  .goldenThreadWrapper {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.goldenThread {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, var(--color-gold), var(--color-gold-light));
+  transform-origin: top;
+}
+
+.dayBlock {
+  margin-bottom: 80px;
+}
+
+.dayTitle {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: 40px;
+  text-align: left;
+  padding-left: 64px;
+}
+
+@media (min-width: 768px) {
+  .dayTitle {
+    text-align: center;
+    padding-left: 0;
+  }
+}
+
+.eventRow {
+  position: relative;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 64px;
+}
+
+@media (min-width: 768px) {
+  .eventRow {
+    justify-content: space-between;
+    padding-left: 0;
+  }
+  
+  .eventRow:nth-child(even) {
+    flex-direction: row-reverse;
+  }
+}
+
+/* The node on the thread */
+.eventNode {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  border: 3px solid var(--color-cream);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px var(--color-gold);
+  z-index: 2;
+}
+
+@media (min-width: 768px) {
+  .eventNode {
+    left: 50%;
+  }
+}
+
+.eventCard {
+  width: 100%;
+  background: #fffdf7;
+  border: 1px solid var(--color-cream-border);
+  padding: 30px;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(36,29,21,0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .eventCard {
+    width: calc(50% - 40px);
+  }
+}
+
+.eventName {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  margin-bottom: 8px;
+}
+
+.eventLocation {
+  font-size: 16px;
+  color: var(--color-olive);
+}
+
+.eventTime {
+  margin-top: 16px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-gold-dark);
+  letter-spacing: 2px;
+}

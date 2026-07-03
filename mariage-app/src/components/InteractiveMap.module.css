@@ -1,0 +1,118 @@
+.mapSection {
+  background-color: var(--color-cream-dark);
+  padding: 120px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subtitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-script);
+  font-size: clamp(48px, 10vw, 64px);
+  color: var(--color-charcoal);
+  margin: 0 0 40px 0;
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tabBtn {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 24px;
+  border: 1px solid var(--color-gold);
+  background: transparent;
+  color: var(--color-charcoal);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.tabBtn.active {
+  background: var(--color-charcoal);
+  color: var(--color-cream);
+  border-color: var(--color-charcoal);
+}
+
+.mapContainer {
+  width: 100%;
+  max-width: 900px;
+  border: 1px solid var(--color-gold);
+  outline: 8px solid var(--color-cream);
+  background: var(--color-cream);
+  box-shadow: 0 20px 50px rgba(36,29,21,0.1);
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.iframeWrapper {
+  width: 100%;
+  height: 450px;
+  background: #e5e3df; /* Placeholder map color */
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 16px 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.btnPrimary {
+  background: var(--color-charcoal);
+  color: var(--color-cream);
+  border: 1px solid var(--color-charcoal);
+}
+.btnPrimary:hover {
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+}
+
+.btnOutline {
+  background: transparent;
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-gold);
+}
+.btnOutline:hover {
+  background: var(--color-cream);
+}

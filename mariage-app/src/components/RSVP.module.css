@@ -1,0 +1,138 @@
+.rsvpSection {
+  background-color: var(--color-charcoal);
+  padding: 120px 24px 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subtitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-script);
+  font-size: clamp(48px, 10vw, 64px);
+  color: var(--color-cream);
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+.intro {
+  font-size: 18px;
+  color: var(--color-gold-light);
+  max-width: 520px;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.form {
+  width: 100%;
+  max-width: 500px;
+  background: var(--color-charcoal-light);
+  border: 1px solid var(--color-charcoal-border);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-radius: 4px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+}
+
+.input {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  padding: 16px;
+  border: 1px solid var(--color-charcoal-border);
+  background: var(--color-charcoal);
+  color: var(--color-cream);
+  outline: none;
+  transition: border-color 0.3s;
+}
+.input:focus {
+  border-color: var(--color-gold);
+}
+
+.chipGroup {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  padding: 12px 20px;
+  border: 1px solid var(--color-gold-dark);
+  background: transparent;
+  color: var(--color-cream);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.chip.selected {
+  background: var(--color-gold-dark);
+}
+
+.submitBtn {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-charcoal);
+  background: var(--color-gold);
+  border: none;
+  padding: 18px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s ease;
+}
+.submitBtn:hover {
+  background: var(--color-gold-light);
+}
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  text-align: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--color-gold);
+  font-size: 18px;
+}
+
+.errorMessage {
+  text-align: center;
+  color: #e74c3c;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.countText {
+  margin-top: 40px;
+  font-size: 15px;
+  color: var(--color-olive);
+  opacity: 0.8;
+}
